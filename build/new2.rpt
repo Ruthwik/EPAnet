@@ -1,4 +1,4 @@
-  Page 1                                    Thu Apr 30 09:25:41 2015
+  Page 1                                    Fri May 01 17:11:48 2015
 
   ******************************************************************
   *                           E P A N E T                          *
@@ -36,7 +36,7 @@
          No Nodes
          No Links
    
-  Analysis begun Thu Apr 30 09:25:41 2015
+  Analysis begun Fri May 01 17:11:48 2015
 
      0:00:00: Balanced after 5 trials
      0:00:00: Tank 1 is closed at -1000.00 ft
@@ -69,4 +69,4 @@
   WARNING: 3 additional nodes disconnected at 0:00:00 hrs
   WARNING: System disconnected because of Link 1
   
-  Analysis ended Thu Apr 30 09:25:41 2015
+  Analysis ended Fri May 01 17:11:50 2015
