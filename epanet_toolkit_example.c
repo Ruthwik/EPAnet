@@ -104,18 +104,16 @@ int fordFulkerson (int source, int sink) {
 void newfordFulkerson (int source, int sink) {
     int i,j,ijk,u,r,p,ij=2,k=2,f=2,max_flow=0,min=0,index=0;
     int pa[n][n];
-	int a[n]; 
+	int a[15]; 
  
-     for (ijk=0; ijk<n; ijk++){
-     	printf("\n value %d",n);
-      if(ijk==9)
-        print(" A VALUSE");
-     	a[ijk]=oo;
+     for (ijk=0; ijk<=15; ijk++){
+    
+     	a[ijk]=100000;
 	 }
 	 
 	 
-	  for (i=2; i<=n; i++) {
-	for (j=2; j<=n; j++){
+	  for (i=0; i<15; i++) {
+	for (j=0; j<15; j++){
 
        pa[i][j] = -1;
 	}
@@ -126,9 +124,8 @@ void newfordFulkerson (int source, int sink) {
 	    flow[i][j] = 0;
 	}
     }
-    for(i=2;i<=n;i++){
- 	printf("a before value %d \n",a[i]);
- } 
+ 
+ 
       while (bfs(source,sink)) {
        int x;
 	int increment = oo;
@@ -138,7 +135,7 @@ void newfordFulkerson (int source, int sink) {
 	    increment = min2(increment,capacity[pred[u]][u]-flow[pred[u]][u]);
 	   	pa[k][ij]=u;
 			ij++;
-			printf("increment %d \n",increment);
+		//	printf("increment %d \n",increment);
 		}
 		a[f]=increment; 
 		f++;
@@ -154,24 +151,35 @@ void newfordFulkerson (int source, int sink) {
 	}
 	max_flow += increment;
     }
- for(i=2;i<=n;i++){
+    
+    /*	  for (i=0; i<15; i++) {
+	for (j=0; j<15; j++){
+
+      printf("p value \n%d ",pa[i][j]) ;
+	}
+    }*/
+ /*for(i=2;i<=n;i++){
  	printf("a value %d \n",a[i]);
- }  
+ }  */
      minArray(a,&min,&index);
      
-     //printf("Min value and index %d  %d",min,index);
+    // printf("Min value and index %d  %d",min,index);
 
 
     
 	/*for (int j = 0; j < V; j++) {
 		cout << "pa" << pa[n][j] << "\n";
-	}*/	for (r = 2; r<=n; r++) {
+	}*/	for (r = 0; r<15; r++) {
 		int q = pa[index][r]; //pa[n][r] gives the augmenting path of minmum capacity link
 		int p = pa[index][r + 1];
         
+       // printf("\n%d %dq value and p value\n ",q,p);
+        // printf("\nfinal value %d", capacity[p][q]-flow[p][q]);
         //Increasing the link capacity that less than or equal to min capacity along the path
-		if (capacity[pred[u]][u]-flow[pred[u]][u] <= 0 && q != -1 && p != -1) {
-		//	capacity[p][q]++;
+		if (capacity[p][q]-flow[p][q] <= 0 && q != -1 && p != -1) 
+		{
+			// printf("\nfinal valufhgthfche %d", capacity[p][q]-flow[p][q]);
+			capacity[p][q]=capacity[p][q]+1;
 		//	int ENsetlinkvalue( int index, int paramcode, float value ) 
 
 		} 
@@ -179,7 +187,7 @@ void newfordFulkerson (int source, int sink) {
 }
 int minArray(int v[],int* min,int* index)
 {
-    int m=100000000,len=0; 
+    int m=100000000,len=0,x; 
 	int i;  
     for(i=0;v[i];i++)
         len++;
@@ -188,11 +196,11 @@ int minArray(int v[],int* min,int* index)
         if(v[i]<m)   //for max, change '<' to '>'
           {
 			  m=v[i];
-			  *min=v[i];
-			  *index=i;
+			 x=i;
 		}
 
-    
+     *min=m;
+	 *index=x;
 }
 int main(int argc, char* argv[])
 {    int y = 0;
