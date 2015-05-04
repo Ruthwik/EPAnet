@@ -16,6 +16,7 @@
 
 int n=15;  // number of nodes
 int e=14;  // number of edges
+int indexm[MAX_NODES][MAX_NODES];
 int capacity[MAX_NODES][MAX_NODES]; // capacity matrix
 int flow[MAX_NODES][MAX_NODES];     // flow matrix
 int color[MAX_NODES]; // needed for breadth-first search               
@@ -105,8 +106,9 @@ void newfordFulkerson (int source, int sink) {
     int i,j,ijk,u,r,p,ij=2,k=2,f=2,max_flow=0,min=0,index=0;
     int pa[n][n];
 	int a[15]; 
+	int indexh=0; 
  
-     for (ijk=0; ijk<=15; ijk++){
+     for (ijk=0; ijk<15; ijk++){
     
      	a[ijk]=100000;
 	 }
@@ -158,12 +160,12 @@ void newfordFulkerson (int source, int sink) {
       printf("p value \n%d ",pa[i][j]) ;
 	}
     }*/
- /*for(i=2;i<=n;i++){
+/* for(i=2;i<=n;i++){
  	printf("a value %d \n",a[i]);
- }  */
+ } */ 
      minArray(a,&min,&index);
      
-    // printf("Min value and index %d  %d",min,index);
+     printf("Min value and index %d  %d",min,index);
 
 
     
@@ -178,9 +180,17 @@ void newfordFulkerson (int source, int sink) {
         //Increasing the link capacity that less than or equal to min capacity along the path
 		if (capacity[p][q]-flow[p][q] <= 0 && q != -1 && p != -1) 
 		{
+		float nvalue,fg;
 			// printf("\nfinal valufhgthfche %d", capacity[p][q]-flow[p][q]);
 			capacity[p][q]=capacity[p][q]+1;
-		//	int ENsetlinkvalue( int index, int paramcode, float value ) 
+		indexh=	indexm[p][q];
+	//	printf("\n indexh %d",indexh);
+		 ENgetlinkvalue( indexh, EN_INITSETTING , &nvalue );
+		 //printf("\n %f nvalue",nvalue);
+		 fg=nvalue+1.0;
+		 //printf("\n %f fg",fg);
+		 //setlinksetting()
+		 ENsetlinkvalue( indexh,EN_INITSETTING ,fg ); 
 
 		} 
 	}
@@ -193,7 +203,7 @@ int minArray(int v[],int* min,int* index)
         len++;
 
     for( i=0;i<len;i++)
-        if(v[i]<m)   //for max, change '<' to '>'
+        if(v[i]<m)  
           {
 			  m=v[i];
 			 x=i;
@@ -209,67 +219,75 @@ int main(int argc, char* argv[])
   	int loop=0,b;
   		int maxcap;
     int   i, nnodes,Nlinks,lindex,x1,y1,maxcapacity; 
-    float D,nvalue; 
-   long t;
-  
+    float D,nvalue,demand; 
+   long t=3600;
+  long tstep; 
     char lid;
     float value;	
 	
 																																																	
-     ENopen("ff.inp", "new2.rpt", ""); 
+     ENopen("ff3.inp","new3.txt",""); 
+     
      ENopenH(); 
-    
+ 
      ENgetcount(EN_LINKCOUNT, &nnodes);
      ENrunH(&t);
-      
- 
-   // ENgetcount(EN_TANKCOUNT, &Nlinks); 
      
-    //printf("ENgetCOUNTvalue for  returned %d\n", nnodes);
-    
-
+     ENgetnodevalue( n-2,EN_BASEDEMAND,&demand );
+     printf("%fInitial demand \n",demand);
+ 
+ 
     for (i=2; i<=nnodes; i++)
      {
    
    	   ENgetlinknodes(i, &x1, &y1);
      //  printf(" %d %d \n",x+1,y+1);
-	  ENgetlinkvalue( i, 8 , &nvalue );
-	
+	  ENgetlinkvalue( i, EN_INITSETTING , &nvalue );
 	  
 	  //printf("%f ",nvalue);
 
-       capacity[x1+1][y1+1]=(int)nvalue;
+       capacity[x1+1][y1+1]= nearbyint(nvalue);
+      indexm[x1+1][y1+1]=i;
       
 	  }
- 
+  for (u = 2; u <= nnodes; u++)
+        	for (v = 2; v <= nnodes; v++)
+		 {
+	          if(capacity[u][v]>0)
+			 printf("\n %d  ",capacity[u][v]);
+		}
 		printf("enter the number x liters/sec\n");
        scanf("%d", &y);
-
+   
     maxcapacity = fordFulkerson(2, 14);
     
 	if (y > maxcapacity) {
+		 ENsetnodevalue( n-2, EN_BASEDEMAND,y);
 		 loop = y - maxcapacity;
 		for ( b = 0; b < loop; b++) {
 			 newfordFulkerson(2, 14);
 			 
 			 
 			 //prints the modified graph
-			 for (u = 2; u <= nnodes; u++)
-        	for (v = 2; v <= nnodes; v++)
-		 {
-	          if(capacity[u][v]>0)
-			 printf("\n %d  ",capacity[u][v]);
-			 
-		} 
-		
+	for (i=2; i<=nnodes; i++)
+     {
+   
+   	   ENgetlinknodes(i, &x1, &y1);
+       ENgetlinkvalue( i, EN_INITSETTING , &nvalue );
+        //printf("nvalue  %d %d is %f \n",x1+1,y1+1,nvalue);
+       capacity[x1+1][y1+1]= nearbyint(nvalue);
+       indexm[x1+1][y1+1]=i;
+      
+	  }
 			maxcap =fordFulkerson(2, 14);
 			 printf("\n This is the max capacity \n");
              printf("\n %d  ",maxcap);
  	}
-
+ ENsolveH(); 
 	} else
 
 		 printf("No capacities have to be changed");
+
 	 /*
 for (u = 2; u <= nnodes; u++)
         	for (v = 2; v <= nnodes; v++)
@@ -279,6 +297,24 @@ for (u = 2; u <= nnodes; u++)
 		}*/	
     //printf("\n This is the max capacity \n");
     //printf("\n %d  ",maxcapacity);
+
+
+ENsettimeparam(EN_STATISTIC, EN_RANGE); 
+
+/* Solve hydraulics */ 
+ENsolveH(); 
+ENsaveH(); 
+
+/* Define contents of the report */ 
+ENresetreport(); 
+ENsetreport("FILE myfile.txt"); 
+ENsetreport("LINKS ALL"); 
+ENsetreport("FLOW PRECISION 1"); 
+ENsetreport("NODES ALL"); 
+
+/* Write the report to file */ 
+ENreport();  
+
   
    ENcloseH(); 
    ENclose(); 
